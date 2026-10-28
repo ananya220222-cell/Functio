@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Relations & Functions Adventure - คณิตศาสตร์ ม.4</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font (Kanit) -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * {
+            font-family: 'Kanit', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        body {
+            background-color: #0f172a;
+            color: #ffffff;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(59, 130, 246, 0.2) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(147, 51, 234, 0.2) 0%, transparent 40%);
+        }
+
+        /* Roblox 3D Button Style */
+        .roblox-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.08s ease;
+            box-shadow: 0 6px 0 var(--btn-shadow, rgba(0,0,0,0.4)), 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+
+        .roblox-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 var(--btn-shadow, rgba(0,0,0,0.4)), 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Color Variations for Roblox Buttons */
+        .roblox-btn-green {
+            background: linear-gradient(180deg, #10B981 0%, #059669 100%);
+            --btn-shadow: #047857;
+            color: #ffffff;
+        }
+
+        .roblox-btn-orange {
+            background: linear-gradient(180deg, #F59E0B 0%, #D97706 100%);
+            --btn-shadow: #B45309;
+            color: #ffffff;
+        }
+
+        .roblox-btn-blue {
+            background: linear-gradient(180deg, #3B82F6 0%, #1D4ED8 100%);
+            --btn-shadow: #1E40AF;
+            color: #ffffff;
+        }
+
+        .roblox-btn-purple {
+            background: linear-gradient(180deg, #8B5CF6 0%, #6D28D9 100%);
+            --btn-shadow: #4C1D95;
+            color: #ffffff;
+        }
+
+        .roblox-btn-red {
+            background: linear-gradient(180deg, #EF4444 0%, #DC2626 100%);
+            --btn-shadow: #991B1B;
+            color: #ffffff;
+        }
+
+        .roblox-btn-gray {
+            background: linear-gradient(180deg, #6B7280 0%, #4B5563 100%);
+            --btn-shadow: #374151;
+            color: #ffffff;
+        }
+
+        /* Roblox Card Container */
+        .roblox-card {
+            background: rgba(30, 41, 59, 0.88);
+            backdrop-filter: blur(12px);
+            border: 4px solid #334155;
+            border-radius: 24px;
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.1), 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 4px;
+        }
+
+        /* Progress Bar Animation */
+        .timer-progress {
+            transition: width 1s linear;
+        }
+
+        /* Option Button Base Style */
+        .option-btn {
+            background: #1e293b;
+            border: 3px solid #334155;
+            box-shadow: 0 5px 0 #0f172a;
+            border-radius: 16px;
+            transition: all 0.1s ease;
+        }
+        .option-btn:hover {
+            background: #334155;
+            border-color: #3b82f6;
+        }
+        .option-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #0f172a;
+        }
+        .option-btn.correct {
+            background: #059669 !important;
+            border-color: #10B981 !important;
+            box-shadow: 0 5px 0 #047857 !important;
+        }
+        .option-btn.incorrect {
+            background: #DC2626 !important;
+            border-color: #EF4444 !important;
+            box-shadow: 0 5px 0 #991B1B !important;
+        }
+
+        /* Hand Tracking Pointer Simulation */
+        #virtual-pointer {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            background: rgba(59, 130, 246, 0.8);
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            box-shadow: 0 0 15px #3b82f6;
+            display: none;
+            transition: width 0.1s, height 0.1s;
+        }
+        #virtual-pointer.pinching {
+            width: 20px;
+            height: 20px;
+            background: #10B981;
+            box-shadow: 0 0 15px #10B981;
+        }
+
+        .neon-glow {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.6), 0 0 20px rgba(147, 51, 234, 0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-2 md:p-4">
+
+    <!-- Virtual Pointer for Hand Simulation -->
+    <div id="virtual-pointer"></div>
+
+    <!-- Main Container App -->
+    <div id="app" class="w-full max-w-4xl roblox-card p-4 md:p-6 min-h-[650px] flex flex-col justify-between relative overflow-hidden">
+        
+        <!-- ==================== HEADER BAR ==================== -->
+        <header class="flex justify-between items-center bg-[#0f172a]/90 p-3 rounded-2xl border-2 border-[#1e293b] mb-4">
+            <!-- User Profile Quick View -->
+            <div class="flex items-center space-x-3">
+                <div id="header-avatar" class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-xl border-2 border-white shadow-md">
+                    📐
+                </div>
+                <div>
+                    <div id="header-username" class="font-extrabold text-sm md:text-base text-yellow-400 leading-tight">นักเรียนใหม่</div>
+                    <div id="header-student-id" class="text-xs text-gray-400">ID: - | ม.4</div>
+                </div>
+            </div>
+
+            <!-- Controls (Settings & Stats) -->
+            <div class="flex items-center space-x-2">
+                <button onclick="AudioEngine.toggleMute()" id="mute-btn" class="roblox-btn roblox-btn-purple px-3 py-2 text-xs md:text-sm">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+                <button onclick="showScreen('screen-stats')" class="roblox-btn roblox-btn-blue px-3 py-2 text-xs md:text-sm">
+                    <i class="fas fa-trophy mr-1"></i> สถิติ
+                </button>
+                <button onclick="showScreen('screen-settings')" class="roblox-btn roblox-btn-gray px-3 py-2 text-xs md:text-sm">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- ==================== SCREENS ==================== -->
+
+        <!-- 1. LOGIN / PROFILE SCREEN -->
+        <section id="screen-login" class="screen flex-1 flex flex-col items-center justify-center space-y-6 py-4">
+            <div class="text-center space-y-2">
+                <h1 class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 neon-glow">
+                    RELATIONS & FUNCTIONS
+                </h1>
+                <p class="text-gray-300 text-sm md:text-base">คณิตศาสตร์ ม.4: การผจญภัยในโลกของความสัมพันธ์และฟังก์ชัน</p>
+            </div>
+
+            <div class="w-full max-w-md bg-[#1e293b] p-6 rounded-2xl border-2 border-[#334155] space-y-4">
+                <h2 class="text-lg font-bold text-yellow-400 text-center border-b border-gray-700 pb-2">
+                    <i class="fas fa-id-card mr-2"></i>ลงทะเบียนนักเรียน ม.4
+                </h2>
+                
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1 font-semibold">ชื่อ-นามสกุล / ชื่อเล่น:</label>
+                    <input type="text" id="input-name" placeholder="กรอกชื่อของคุณ..." 
+                        class="w-full bg-[#0f172a] border-2 border-[#334155] rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 font-bold">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1 font-semibold">รหัสนักเรียน:</label>
+                        <input type="text" id="input-student-id" placeholder="เช่น 40101" 
+                            class="w-full bg-[#0f172a] border-2 border-[#334155] rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1 font-semibold">ห้องเรียน / เลขที่:</label>
+                        <input type="text" id="input-room" placeholder="ม.4/1 เลขที่ 5" 
+                            class="w-full bg-[#0f172a] border-2 border-[#334155] rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 font-bold">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 font-semibold">เลือกตัวละครอวตาร:</label>
+                    <div class="grid grid-cols-5 gap-2" id="avatar-selector">
+                        <!-- Dynamic Avatars -->
+                    </div>
+                </div>
+
+                <button onclick="saveProfileAndStart()" class="roblox-btn roblox-btn-green w-full py-3 text-lg mt-2">
+                    เข้าสู่ห้องเรียน <i class="fas fa-play ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- 2. MAIN MENU SCREEN -->
+        <section id="screen-main-menu" class="screen hidden flex-1 flex flex-col items-center justify-center space-y-6 py-6">
+            <div class="text-center space-y-2">
+                <span class="bg-blue-900/80 text-blue-300 text-xs px-3 py-1 rounded-full border border-blue-500/50">Math ม.4 Roblox Edition</span>
+                <h1 class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400">
+                    ความสัมพันธ์และฟังก์ชัน
+                </h1>
+                <p class="text-gray-300 text-sm">ทบทวนเนื้อหาและตะลุยโจทย์เพื่อความพร้อมในการสอบคณิตศาสตร์</p>
+            </div>
+
+            <!-- Avatar Preview Box -->
+            <div class="bg-[#1e293b] px-8 py-4 rounded-2xl border-2 border-[#334155] flex items-center space-x-4">
+                <div id="menu-avatar-display" class="text-4xl bg-blue-600 p-3 rounded-xl border-2 border-yellow-400 shadow-lg">📐</div>
+                <div>
+                    <div class="text-xs text-gray-400">ยินดีต้อนรับ!</div>
+                    <div id="menu-username-display" class="text-xl font-black text-yellow-400">ชื่อผู้เล่น</div>
+                    <div class="text-xs text-green-400 font-bold" id="menu-total-score">คะแนนรวมสะสม: 0 คะแนน</div>
+                </div>
+            </div>
+
+            <!-- Main Navigation Buttons -->
+            <div class="w-full max-w-sm space-y-3">
+                <button onclick="showScreen('screen-level-select')" class="roblox-btn roblox-btn-green w-full py-4 text-xl">
+                    <i class="fas fa-play-circle mr-2"></i> เริ่มเล่นตะลุยด่าน
+                </button>
+                <button onclick="showScreen('screen-stats')" class="roblox-btn roblox-btn-orange w-full py-3 text-lg">
+                    <i class="fas fa-chart-bar mr-2"></i> ลีดเดอร์บอร์ด & สถิติ
+                </button>
+                <button onclick="showScreen('screen-settings')" class="roblox-btn roblox-btn-purple w-full py-3 text-lg">
+                    <i class="fas fa-sliders-h mr-2"></i> ตั้งค่าระบบ
+                </button>
+            </div>
+        </section>
+
+        <!-- 3. LEVEL SELECT SCREEN -->
+        <section id="screen-level-select" class="screen hidden flex-1 flex flex-col justify-between py-2">
+            <div class="flex items-center justify-between border-b border-gray-700 pb-3">
+                <button onclick="showScreen('screen-main-menu')" class="roblox-btn roblox-btn-gray px-3 py-2 text-xs">
+                    <i class="fas fa-arrow-left mr-1"></i> กลับหน้าหลัก
+                </button>
+                <h2 class="text-xl font-black text-yellow-400">เลือกด่านเนื้อหาคณิตศาสตร์</h2>
+                <div class="w-16"></div>
+            </div>
+
+            <!-- Levels List Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-auto py-4">
+                <!-- Level 1 -->
+                <div id="level-card-1" class="bg-[#1e293b] p-5 rounded-2xl border-2 border-blue-500/50 flex flex-col justify-between relative overflow-hidden">
+                    <div class="bg-blue-600 text-xs font-bold px-2 py-1 rounded-md self-start mb-2">ด่านที่ 1</div>
+                    <h3 class="text-lg font-black text-white mb-2">ผลคูณคาร์ทีเซียน & โดเมน-เรนจ์</h3>
+                    <p class="text-xs text-gray-300 mb-4 leading-relaxed">คู่อันดับ, เซต $A \times B$, การหาโดเมน ($D_r$) และเรนจ์ ($R_r$) จากเซต กราฟ และสมการ</p>
+                    <div class="flex items-center justify-between text-xs text-yellow-400 mb-4 font-bold">
+                        <span><i class="fas fa-question-circle"></i> 15 ข้อ</span>
+                        <span><i class="fas fa-clock"></i> 8 นาที</span>
+                    </div>
+                    <button onclick="startLevel(1)" class="roblox-btn roblox-btn-green w-full py-3 text-sm">
+                        ลุยด่าน 1 <i class="fas fa-chevron-right ml-1"></i>
+                    </button>
+                </div>
+
+                <!-- Level 2 -->
+                <div id="level-card-2" class="bg-[#1e293b] p-5 rounded-2xl border-2 border-gray-700 opacity-75 flex flex-col justify-between relative overflow-hidden">
+                    <div class="bg-gray-600 text-xs font-bold px-2 py-1 rounded-md self-start mb-2">ด่านที่ 2</div>
+                    <h3 class="text-lg font-black text-white mb-2">ฟังก์ชันและการตรวจสอบ</h3>
+                    <p class="text-xs text-gray-300 mb-4 leading-relaxed">นิยามฟังก์ชัน, Vertical Line Test, ฟังก์ชันหนึ่งต่อหนึ่ง ($1-1$), และฟังก์ชันไปทั่วถึง (Onto)</p>
+                    <div class="flex items-center justify-between text-xs text-yellow-400 mb-4 font-bold">
+                        <span><i class="fas fa-question-circle"></i> 15 ข้อ</span>
+                        <span><i class="fas fa-clock"></i> 8 นาที</span>
+                    </div>
+                    <button id="level-btn-2" onclick="startLevel(2)" disabled class="roblox-btn roblox-btn-gray w-full py-3 text-sm opacity-50 cursor-not-allowed">
+                        <i class="fas fa-lock mr-1"></i> ยังไม่ปลดล็อก
+                    </button>
+                </div>
+
+                <!-- Level 3 -->
+                <div id="level-card-3" class="bg-[#1e293b] p-5 rounded-2xl border-2 border-gray-700 opacity-75 flex flex-col justify-between relative overflow-hidden">
+                    <div class="bg-gray-600 text-xs font-bold px-2 py-1 rounded-md self-start mb-2">ด่านที่ 3</div>
+                    <h3 class="text-lg font-black text-white mb-2">ฟังก์ชันผกผัน & คอมโพสิต</h3>
+                    <p class="text-xs text-gray-300 mb-4 leading-relaxed">การคำนวณ $f(x)$, ฟังก์ชันผกผัน $f^{-1}(x)$, ฟังก์ชันประกอบ $(g \circ f)(x)$ และการแก้โจทย์พีชคณิต</p>
+                    <div class="flex items-center justify-between text-xs text-yellow-400 mb-4 font-bold">
+                        <span><i class="fas fa-question-circle"></i> 15 ข้อ</span>
+                        <span><i class="fas fa-clock"></i> 8 นาที</span>
+                    </div>
+                    <button id="level-btn-3" onclick="startLevel(3)" disabled class="roblox-btn roblox-btn-gray w-full py-3 text-sm opacity-50 cursor-not-allowed">
+                        <i class="fas fa-lock mr-1"></i> ยังไม่ปลดล็อก
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-center text-xs text-gray-400">
+                * ต้องทำคะแนนผ่านอย่างน้อย 60% ในด่านก่อนหน้าเพื่อปลดล็อกด่านถัดไป
+            </div>
+        </section>
+
+        <!-- 4. GAMEPLAY SCREEN -->
+        <section id="screen-gameplay" class="screen hidden flex-1 flex flex-col justify-between py-1">
+            <!-- Top Status Bar -->
+            <div class="bg-[#0f172a] p-3 rounded-2xl border border-[#334155] space-y-2">
+                <div class="flex justify-between items-center text-xs md:text-sm font-bold">
+                    <div class="text-blue-400 flex items-center">
+                        <span id="game-level-badge" class="bg-blue-600 text-white px-2 py-0.5 rounded text-xs mr-2">ด่าน 1</span>
+                        <span id="game-question-counter">ข้อ 1 / 15</span>
+                    </div>
+                    <!-- Streak & Score -->
+                    <div class="flex items-center space-x-4">
+                        <div id="streak-container" class="hidden text-orange-400 animate-pulse">
+                            <i class="fas fa-fire mr-1"></i>คอมโบ x<span id="streak-count">0</span>
+                        </div>
+                        <div class="text-yellow-400 text-base">
+                            <i class="fas fa-star mr-1"></i><span id="game-score">0</span> คะแนน
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timer Progress Bar -->
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-clock text-red-400 text-xs"></i>
+                    <div class="flex-1 bg-gray-800 h-3 rounded-full overflow-hidden p-0.5 border border-gray-700">
+                        <div id="game-timer-bar" class="bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 h-full rounded-full timer-progress" style="width: 100%;"></div>
+                    </div>
+                    <span id="game-timer-text" class="text-xs font-mono text-gray-300 w-12 text-right">08:00</span>
+                </div>
+            </div>
+
+            <!-- Question and Visual Container -->
+            <div class="my-3 space-y-3 flex-1 flex flex-col justify-center">
+                <!-- SVG Diagram Display -->
+                <div id="question-image-container" class="w-full bg-[#0f172a] border-2 border-[#334155] rounded-2xl p-2 flex items-center justify-center min-h-[140px] max-h-[180px]">
+                    <!-- Diagram dynamic inject -->
+                </div>
+
+                <!-- Question Text -->
+                <div class="bg-[#1e293b] p-4 rounded-2xl border-2 border-[#334155]">
+                    <h3 id="question-text" class="text-base md:text-lg font-extrabold text-white leading-snug">
+                        กำลังโหลดคำถาม...
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Options Grid -->
+            <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                <!-- 4 Choice Buttons Dynamic Inject -->
+            </div>
+
+            <!-- Bottom Action Controls -->
+            <div class="flex justify-between items-center border-t border-gray-800 pt-2">
+                <button onclick="toggleHandControlSim()" id="hand-sim-btn" class="roblox-btn roblox-btn-purple px-3 py-2 text-xs">
+                    <i class="fas fa-hand-pointer mr-1"></i> โหมด Hand Pointer: <span id="hand-sim-status">ปิด</span>
+                </button>
+                <button onclick="skipQuestion()" id="skip-btn" class="roblox-btn roblox-btn-orange px-4 py-2 text-xs">
+                    ข้ามข้อนี้ (<span id="skip-count">2</span>/2) <i class="fas fa-forward ml-1"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- 5. LEVEL SUMMARY SCREEN -->
+        <section id="screen-summary" class="screen hidden flex-1 flex flex-col items-center justify-center space-y-5 py-4">
+            <div class="text-center space-y-1">
+                <div id="summary-icon" class="text-6xl mb-2">🏆</div>
+                <h2 id="summary-title" class="text-3xl font-black text-yellow-400">สรุปผลการทำแบบทดสอบ</h2>
+                <p id="summary-subtitle" class="text-gray-300 text-sm">ยอดเยี่ยมมาก! คุณผ่านเกณฑ์ด่านนี้แล้ว</p>
+            </div>
+
+            <!-- Stats Badge Grid -->
+            <div class="w-full max-w-md bg-[#1e293b] p-5 rounded-2xl border-2 border-[#334155] space-y-4">
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-[#0f172a] p-3 rounded-xl border border-blue-500/30">
+                        <div class="text-xs text-gray-400">คะแนนที่ได้</div>
+                        <div id="summary-score" class="text-xl font-black text-yellow-400">0</div>
+                    </div>
+                    <div class="bg-[#0f172a] p-3 rounded-xl border border-blue-500/30">
+                        <div class="text-xs text-gray-400">ความถูกต้อง</div>
+                        <div id="summary-accuracy" class="text-xl font-black text-green-400">0%</div>
+                    </div>
+                    <div class="bg-[#0f172a] p-3 rounded-xl border border-blue-500/30">
+                        <div class="text-xs text-gray-400">เวลาที่ใช้</div>
+                        <div id="summary-time" class="text-xl font-black text-blue-400">00:00</div>
+                    </div>
+                </div>
+
+                <!-- Star Rating Display -->
+                <div class="text-center py-2">
+                    <div class="text-xs text-gray-400 mb-1">ระดับดาวที่ได้รับ</div>
+                    <div id="summary-stars" class="text-3xl text-yellow-400 space-x-2">
+                        <i class="far fa-star"></i>
+                        <i class="far fa-star"></i>
+                        <i class="far fa-star"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full max-w-md space-y-2">
+                <button onclick="showScreen('screen-level-select')" class="roblox-btn roblox-btn-green w-full py-3 text-base">
+                    เลือกด่านต่อไป <i class="fas fa-play ml-1"></i>
+                </button>
+                <button onclick="retryCurrentLevel()" class="roblox-btn roblox-btn-orange w-full py-3 text-base">
+                    ลองใหม่อีกครั้ง <i class="fas fa-redo ml-1"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- 6. STATS & LEADERBOARD SCREEN -->
+        <section id="screen-stats" class="screen hidden flex-1 flex flex-col justify-between py-2">
+            <div class="flex items-center justify-between border-b border-gray-700 pb-3">
+                <button onclick="showScreen('screen-main-menu')" class="roblox-btn roblox-btn-gray px-3 py-2 text-xs">
+                    <i class="fas fa-arrow-left mr-1"></i> กลับ
+                </button>
+                <h2 class="text-xl font-black text-yellow-400">สถิติและอันดับการเรียนรู้</h2>
+                <div class="w-16"></div>
+            </div>
+
+            <div class="my-3 space-y-4 flex-1 overflow-y-auto max-h-[420px] pr-1">
+                <!-- Personal Best Card -->
+                <div class="bg-[#1e293b] p-4 rounded-2xl border-2 border-blue-500/50 flex justify-between items-center">
+                    <div class="flex items-center space-x-3">
+                        <div id="stats-avatar" class="text-3xl bg-blue-600 p-2 rounded-xl">📐</div>
+                        <div>
+                            <div id="stats-name" class="font-extrabold text-yellow-400">ชื่อผู้เล่น</div>
+                            <div id="stats-student-id" class="text-xs text-gray-400">ID: -</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs text-gray-400">คะแนนสูงสุดรวม</div>
+                        <div id="stats-high-score" class="text-2xl font-black text-green-400">0</div>
+                    </div>
+                </div>
+
+                <!-- Leaderboard Table -->
+                <div class="bg-[#1e293b] rounded-2xl border-2 border-[#334155] p-3">
+                    <h3 class="text-sm font-bold text-gray-300 mb-3 flex items-center">
+                        <i class="fas fa-list-ol mr-2 text-yellow-400"></i> ตารางอันดับผู้ทำคะแนนสูงสุด (Local)
+                    </h3>
+                    <div class="space-y-2" id="leaderboard-list">
+                        <!-- Dynamic Leaderboard Items -->
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="clearStatsData()" class="text-xs text-red-400 hover:text-red-300 text-center py-1">
+                <i class="fas fa-trash mr-1"></i> ล้างข้อมูลสถิติตัวเอง
+            </button>
+        </section>
+
+        <!-- 7. SETTINGS SCREEN -->
+        <section id="screen-settings" class="screen hidden flex-1 flex flex-col justify-between py-2">
+            <div class="flex items-center justify-between border-b border-gray-700 pb-3">
+                <button onclick="showScreen('screen-main-menu')" class="roblox-btn roblox-btn-gray px-3 py-2 text-xs">
+                    <i class="fas fa-arrow-left mr-1"></i> กลับ
+                </button>
+                <h2 class="text-xl font-black text-yellow-400">ตั้งค่าระบบเกม</h2>
+                <div class="w-16"></div>
+            </div>
+
+            <div class="my-auto max-w-md mx-auto w-full bg-[#1e293b] p-6 rounded-2xl border-2 border-[#334155] space-y-6">
+                <!-- BGM Volume Slider -->
+                <div>
+                    <div class="flex justify-between text-sm font-bold mb-2">
+                        <span><i class="fas fa-music text-purple-400 mr-2"></i>เสียงดนตรีประกอบ (BGM)</span>
+                        <span id="bgm-vol-text">70%</span>
+                    </div>
+                    <input type="range" id="bgm-vol" min="0" max="100" value="70" oninput="AudioEngine.setBGMVolume(this.value)"
+                        class="w-full accent-blue-500 bg-gray-700 h-2 rounded-lg cursor-pointer">
+                </div>
+
+                <!-- SFX Volume Slider -->
+                <div>
+                    <div class="flex justify-between text-sm font-bold mb-2">
+                        <span><i class="fas fa-volume-up text-green-400 mr-2"></i>เสียงเอฟเฟกต์ (SFX)</span>
+                        <span id="sfx-vol-text">80%</span>
+                    </div>
+                    <input type="range" id="sfx-vol" min="0" max="100" value="80" oninput="AudioEngine.setSFXVolume(this.value)"
+                        class="w-full accent-green-500 bg-gray-700 h-2 rounded-lg cursor-pointer">
+                </div>
+
+                <!-- FX Vibrations / Particles Toggle -->
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-bold"><i class="fas fa-magic text-yellow-400 mr-2"></i>เอฟเฟกต์ Confetti Particle</span>
+                    <input type="checkbox" id="particle-toggle" checked class="w-5 h-5 accent-blue-600 rounded">
+                </div>
+            </div>
+
+            <div class="text-center text-xs text-gray-500">
+                Relations & Functions Adventure v1.0.0 (Math ม.4 Roblox Edition)
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        /* -----------------------------------------------------------------
+         * 1. WEB AUDIO API SYNTHESIZER (BGM & SFX WITHOUT EXTERNAL ASSETS)
+         * ----------------------------------------------------------------- */
+        const AudioEngine = {
+            ctx: null,
+            bgmGain: null,
+            sfxGain: null,
+            isMuted: false,
+            bgmInterval: null,
+            bgmVolumeVal: 0.7,
+            sfxVolumeVal: 0.8,
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContext();
+
+                    this.bgmGain = this.ctx.createGain();
+                    this.bgmGain.gain.value = this.bgmVolumeVal;
+                    this.bgmGain.connect(this.ctx.destination);
+
+                    this.sfxGain = this.ctx.createGain();
+                    this.sfxGain.gain.value = this.sfxVolumeVal;
+                    this.sfxGain.connect(this.ctx.destination);
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            },
+
+            playNote(freq, duration, type = 'sine', gainNode = this.sfxGain) {
+                if (this.isMuted || !this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const g = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    
+                    g.gain.setValueAtTime(gainNode.gain.value, this.ctx.currentTime);
+                    g.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
+                    osc.connect(g);
+                    g.connect(this.ctx.destination);
+
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch (e) {}
+            },
+
+            playCorrectSFX() {
+                this.init();
+                this.playNote(523.25, 0.1, 'triangle'); // C5
+                setTimeout(() => this.playNote(659.25, 0.1, 'triangle'), 80); // E5
+                setTimeout(() => this.playNote(783.99, 0.2, 'triangle'), 160); // G5
+            },
+
+            playWrongSFX() {
+                this.init();
+                this.playNote(220, 0.15, 'sawtooth');
+                setTimeout(() => this.playNote(180, 0.25, 'sawtooth'), 120);
+            },
+
+            playClickSFX() {
+                this.init();
+                this.playNote(400, 0.04, 'sine');
+            },
+
+            startBGM() {
+                this.init();
+                if (this.bgmInterval) return;
+                // Upbeat roblox synth melody for math
+                const notes = [293.66, 329.63, 369.99, 392.00, 440.00, 392.00, 369.99, 329.63];
+                let idx = 0;
+                this.bgmInterval = setInterval(() => {
+                    if (!this.isMuted) {
+                        this.playNote(notes[idx], 0.2, 'sine', this.bgmGain);
+                        idx = (idx + 1) % notes.length;
+                    }
+                }, 240);
+            },
+
+            stopBGM() {
+                if (this.bgmInterval) {
+                    clearInterval(this.bgmInterval);
+                    this.bgmInterval = null;
+                }
+            },
+
+            toggleMute() {
+                this.isMuted = !this.isMuted;
+                const btn = document.getElementById('mute-btn');
+                if (this.isMuted) {
+                    btn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                    btn.classList.replace('roblox-btn-purple', 'roblox-btn-red');
+                } else {
+                    btn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                    btn.classList.replace('roblox-btn-red', 'roblox-btn-purple');
+                }
+            },
+
+            setBGMVolume(val) {
+                this.bgmVolumeVal = val / 100;
+                document.getElementById('bgm-vol-text').innerText = `${val}%`;
+                if (this.bgmGain) this.bgmGain.gain.value = this.bgmVolumeVal;
+            },
+
+            setSFXVolume(val) {
+                this.sfxVolumeVal = val / 100;
+                document.getElementById('sfx-vol-text').innerText = `${val}%`;
+                if (this.sfxGain) this.sfxGain.gain.value = this.sfxVolumeVal;
+            }
+        };
+
+        /* -----------------------------------------------------------------
+         * 2. GAME DATA & MATH QUESTION BANK (45 QUESTIONS - ม.4)
+         * ----------------------------------------------------------------- */
+        const AVATARS = ['📐', '📊', '🤖', '🚀', '🧠', '🎓', '🔮', '⭐', '🧩', '👑'];
+
+        // คลังคำถามแยกตามด่าน (ด่านละ 15 ข้อ)
+        const QUESTION_BANK = {
+            1: [
+                {
+                    q: "กำหนดให้ A = {1, 2} และ B = {a, b} ผลคูณคาร์ทีเซียน A x B เท่ากับข้อใด?",
+                    options: ["{(1,a), (1,b), (2,a), (2,b)}", "{(a,1), (b,1), (a,2), (b,2)}", "{(1,1), (2,2), (a,a), (b,b)}", "{(1,a), (2,b)}"],
+                    answer: 0,
+                    svg: "cartesian_product"
+                },
+                {
+                    q: "ถ้า n(A) = 3 และ n(B) = 4 แล้ว จำนวนสมาชิกของ n(A x B) เท่ากับเท่าใด?",
+                    options: ["12", "7", "81", "64"],
+                    answer: 0,
+                    svg: "set_cardinality"
+                },
+                {
+                    q: "กำหนดความสัมพันธ์ r = {(1, 3), (2, 5), (3, 7), (4, 9)} โดเมนของความสัมพันธ์ (D_r) คือข้อใด?",
+                    options: ["{1, 2, 3, 4}", "{3, 5, 7, 9}", "{1, 3, 5, 7}", "{2, 4, 7, 9}"],
+                    answer: 0,
+                    svg: "arrow_relation_1"
+                },
+                {
+                    q: "จากความสัมพันธ์ r = {(1, 3), (2, 5), (3, 7), (4, 9)} เรนจ์ของความสัมพันธ์ (R_r) คือข้อใด?",
+                    options: ["{3, 5, 7, 9}", "{1, 2, 3, 4}", "{1, 3, 7, 9}", "{2, 5, 7, 9}"],
+                    answer: 0,
+                    svg: "arrow_relation_1"
+                },
+                {
+                    q: "ให้ r = {(x, y) ∈ R x R | y = 2x + 1} โดเมนของความสัมพันธ์นี้คือข้อใด?",
+                    options: ["จำนวนจริงทั้งหมด (R)", "{x | x ≥ 0}", "{x | x > 1}", "จำนวนเต็มบวกเท่านั้น"],
+                    answer: 0,
+                    svg: "graph_linear"
+                },
+                {
+                    q: "ให้ r = {(x, y) ∈ R x R | y = √(x - 3)} โดเมน D_r ตรงกับข้อใด?",
+                    options: ["{x | x ≥ 3}", "{x | x > 3}", "{x | x ≤ 3}", "จำนวนจริงทั้งหมด (R)"],
+                    answer: 0,
+                    svg: "graph_sqrt"
+                },
+                {
+                    q: "ให้ r = {(x, y) ∈ R x R | y = 1 / (x - 2)} โดเมน D_r ตรงกับข้อใด?",
+                    options: ["{x ∈ R | x ≠ 2}", "{x ∈ R | x > 2}", "{x ∈ R | x ≥ 2}", "{x ∈ R | x ≠ 0}"],
+                    answer: 0,
+                    svg: "graph_rational"
+                },
+                {
+                    q: "ข้อใดเป็นจริงเกี่ยวกับคู่อันดับ (a, b) = (c, d)?",
+                    options: ["a = c และ b = d", "a = d และ b = c", "a + b = c + d", "a x b = c x d"],
+                    answer: 0,
+                    svg: "ordered_pair_eq"
+                },
+                {
+                    q: "ถ้า (2x + 1, 5) = (7, y - 2) แล้ว ค่าของ x และ y คือข้อใด?",
+                    options: ["x = 3, y = 7", "x = 3, y = 3", "x = 4, y = 7", "x = 2, y = 5"],
+                    answer: 0,
+                    svg: "ordered_pair_eq"
+                },
+                {
+                    q: "กำหนด A = {0, 1} ข้อใดคือ A x A?",
+                    options: ["{(0,0), (0,1), (1,0), (1,1)}", "{(0,1), (1,0)}", "{(0,0), (1,1)}", "{0, 1}"],
+                    answer: 0,
+                    svg: "cartesian_product"
+                },
+                {
+                    q: "ให้ r = {(x, y) | y = x^2 + 2} เรนจ์ R_r ของความสัมพันธ์นี้คือข้อใด?",
+                    options: ["{y | y ≥ 2}", "{y | y ≥ 0}", "จำนวนจริงทั้งหมด (R)", "{y | y ≤ 2}"],
+                    answer: 0,
+                    svg: "graph_parabola"
+                },
+                {
+                    q: "ความสัมพันธ์รีกราฟสี่เหลี่ยมผืนผ้าบนระนาบพิกัดฉาก เกิดจากข้อใด?",
+                    options: ["ผลคูณคาร์ทีเซียนของสองช่วง [a, b] x [c, d]", "สมการเส้นตรง y = mx + c", "สมการวงกลม x^2 + y^2 = r^2", "จุดสี่จุดบนแกน X และ Y"],
+                    answer: 0,
+                    svg: "graph_rectangle"
+                },
+                {
+                    q: "ถ้า A = {1, 2} และ B = ∅ แล้ว A x B มีค่าเท่ากับข้อใด?",
+                    options: ["เซตว่าง (∅)", "{(1, ∅), (2, ∅)}", "{1, 2}", "{0}"],
+                    answer: 0,
+                    svg: "set_cardinality"
+                },
+                {
+                    q: "จากกราฟวงกลม x^2 + y^2 = 9 โดเมนและเรนจ์คือข้อใด?",
+                    options: ["D = [-3, 3], R = [-3, 3]", "D = [0, 9], R = [0, 9]", "D = (-∞, ∞), R = (-∞, ∞)", "D = [0, 3], R = [0, 3]"],
+                    answer: 0,
+                    svg: "graph_circle"
+                },
+                {
+                    q: "ข้อใดคืออินเวิร์สของความสัมพันธ์ r = {(1, 2), (3, 4), (5, 6)}?",
+                    options: ["r^-1 = {(2, 1), (4, 3), (6, 5)}", "r^-1 = {(-1, -2), (-3, -4), (-5, -6)}", "r^-1 = {(1, 2), (3, 4), (5, 6)}", "r^-1 = {(2, 4), (4, 6), (6, 8)}"],
+                    answer: 0,
+                    svg: "arrow_relation_1"
+                }
+            ],
+            2: [
+                {
+                    q: "ความสัมพันธ์ในข้อใดจัดว่าเป็น 'ฟังก์ชัน'?",
+                    options: ["{(1, 2), (2, 3), (3, 4)}", "{(1, 2), (1, 3), (2, 4)}", "{(2, 5), (2, 6), (3, 7)}", "{(0, 1), (0, 2), (0, 3)}"],
+                    answer: 0,
+                    svg: "arrow_relation_1"
+                },
+                {
+                    q: "การทดสอบว่ากราฟความสัมพันธ์เป็นฟังก์ชันหรือไม่ สามารถใช้เส้นตรงทดสอบแบบใด? (Vertical Line Test)",
+                    options: ["ลากเส้นตรงขนานกับแกน Y ถ้าตัดกราฟไม่เกิน 1 จุด เป็นฟังก์ชัน", "ลากเส้นตรงขนานกับแกน X ถ้าตัดกราฟไม่เกิน 1 จุด เป็นฟังก์ชัน", "ลากเส้นทแยงมุม 45 องศาผ่านจุดกำเนิด", "ลากเส้นรอบวงล้อมรอบกราฟ"],
+                    answer: 0,
+                    svg: "vertical_line_test"
+                },
+                {
+                    q: "กราฟของสมการใดต่อไปนี้ 'ไม่เป็นฟังก์ชัน'?",
+                    options: ["x^2 + y^2 = 25 (กราฟวงกลม)", "y = 2x + 5 (กราฟเส้นตรง)", "y = x^2 (กราฟพาราโบลาหงาย)", "y = |x| (กราฟรูปตัว V)"],
+                    answer: 0,
+                    svg: "graph_circle"
+                },
+                {
+                    q: "ฟังก์ชันหนึ่งต่อหนึ่ง (1 - 1 Function) มีนิยามตรงกับข้อใด?",
+                    options: ["สมาชิกในเรนจ์แต่ละตัวจับคู่กับสมาชิกในโดเมนเพียงตัวเดียวเท่านั้น", "โดเมนทุกตัวส่งไปที่สมาชิกตัวเดียวกันในเรนจ์", "สมาชิกในโดเมนจับคู่กับเรนจ์ได้หลายตัว", "เรนจ์เท่ากับเซตของจำนวนจริงเสมอ"],
+                    answer: 0,
+                    svg: "arrow_1to1"
+                },
+                {
+                    q: "การทดสอบว่าฟังก์ชันเป็น 'ฟังก์ชัน 1 - 1' จากกราฟ สามารถใช้วิธีใด? (Horizontal Line Test)",
+                    options: ["ลากเส้นตรงขนานกับแกน X ถ้าตัดกราฟไม่เกิน 1 จุด เป็นฟังก์ชัน 1-1", "ลากเส้นตรงขนานกับแกน Y ถ้าตัดกราฟไม่เกิน 1 จุด เป็นฟังก์ชัน 1-1", "หาจุดตัดแกน X และ Y", "เช็คว่ากราฟผ่านจุดกำเนิด (0,0) หรือไม่"],
+                    answer: 0,
+                    svg: "horizontal_line_test"
+                },
+                {
+                    q: "ฟังก์ชัน f: A -> B จะเป็น 'ฟังก์ชันไปทั่วถึง' (Onto Function) เมื่อใด?",
+                    options: ["เรนจ์ของฟังก์ชันเท่ากับเซต B (R_f = B)", "เรนจ์ของฟังก์ชันเป็นสับเซตแท้ของ B", "โดเมนเท่ากับเซต B", "จำนวนสมาชิกของ A เท่ากับ B"],
+                    answer: 0,
+                    svg: "arrow_onto"
+                },
+                {
+                    q: "กำหนด f = {(1, a), (2, b), (3, a)} ฟังก์ชัน f เป็นฟังก์ชันประเภทใด?",
+                    options: ["ฟังก์ชันจาก A ไป B แต่ไม่เป็น 1-1", "ฟังก์ชัน 1-1", "ไม่เป็นฟังก์ชัน", "ฟังก์ชันคงตัว"],
+                    answer: 0,
+                    svg: "arrow_manyto1"
+                },
+                {
+                    q: "กำหนด f(x) = 3x - 5 ฟังก์ชันนี้เป็นฟังก์ชัน 1 - 1 หรือไม่?",
+                    options: ["เป็นฟังก์ชัน 1 - 1 (เพราะเป็นเส้นตรงไม่ขนานแกน X)", "ไม่เป็นฟังก์ชัน 1 - 1", "ไม่เป็นฟังก์ชัน", "เป็นฟังก์ชันคงตัว"],
+                    answer: 0,
+                    svg: "graph_linear"
+                },
+                {
+                    q: "กำหนด f(x) = x^2 เมื่อ x ∈ R ฟังก์ชันนี้เป็นฟังก์ชัน 1 - 1 หรือไม่?",
+                    options: ["ไม่เป็นฟังก์ชัน 1 - 1 (เพราะ f(2) = f(-2) = 4)", "เป็นฟังก์ชัน 1 - 1", "ไม่เป็นฟังก์ชัน", "เป็นฟังก์ชันเพิ่มเสมอ"],
+                    answer: 0,
+                    svg: "graph_parabola"
+                },
+                {
+                    q: "ฟังก์ชัน f(x) = c (เมื่อ c เป็นค่าคงตัว) เรียกว่าฟังก์ชันอะไร?",
+                    options: ["ฟังก์ชันคงตัว (Constant Function)", "ฟังก์ชันเชิงเส้น (Linear Function)", "ฟังก์ชันกำลังสอง (Quadratic Function)", "ฟังก์ชันเอกลักษณ์ (Identity Function)"],
+                    answer: 0,
+                    svg: "graph_constant"
+                },
+                {
+                    q: "ฟังก์ชัน f(x) = x เรียกว่าฟังก์ชันอะไร?",
+                    options: ["ฟังก์ชันเอกลักษณ์ (Identity Function)", "ฟังก์ชันคงตัว", "ฟังก์ชันขั้นบันได", "ฟังก์ชันผกผัน"],
+                    answer: 0,
+                    svg: "graph_linear"
+                },
+                {
+                    q: "ถ้า f: A -> B เป็นฟังก์ชัน 1-1 และไปทั่วถึง B แล้ว f เรียกว่าอะไร?",
+                    options: ["ฟังก์ชันแบบหนึ่งต่อหนึ่งและไปทั่วถึง (Bijection)", "ฟังก์ชันประกอบ", "ฟังก์ชันคงตัว", "ฟังก์ชันพหุนาม"],
+                    answer: 0,
+                    svg: "arrow_1to1"
+                },
+                {
+                    q: "พพิจารณากราฟพาราโบลาตะแคงขวา x = y^2 กราฟนี้เป็นฟังก์ชันหรือไม่?",
+                    options: ["ไม่เป็นฟังก์ชัน (เพราะเส้นตรงขนานแกน Y ตัดกราฟ 2 จุด)", "เป็นฟังก์ชัน 1-1", "เป็นฟังก์ชันไปทั่วถึง", "เป็นฟังก์ชันคงตัว"],
+                    answer: 0,
+                    svg: "vertical_line_test"
+                },
+                {
+                    q: "กำหนด A = {1, 2, 3} และ B = {x, y} จำนวนฟังก์ชันทั้งหมดจาก A ไป B เท่ากับเท่าใด?",
+                    options: ["2^3 = 8 ฟังก์ชัน", "3^2 = 9 ฟังก์ชัน", "3 x 2 = 6 ฟังก์ชัน", "2! = 2 ฟังก์ชัน"],
+                    answer: 0,
+                    svg: "set_cardinality"
+                },
+                {
+                    q: "จำนวนฟังก์ชัน 1 - 1 จาก A ไป B เมื่อ n(A) = 2 และ n(B) = 3 เท่ากับเท่าใด?",
+                    options: ["3 x 2 = 6 ฟังก์ชัน", "2^3 = 8 ฟังก์ชัน", "3^2 = 9 ฟังก์ชัน", "3! = 6 ฟังก์ชัน"],
+                    answer: 0,
+                    svg: "set_cardinality"
+                }
+            ],
+            3: [
+                {
+                    q: "กำหนด f(x) = 2x + 3 จงหาค่าของ f(4)",
+                    options: ["11", "10", "9", "12"],
+                    answer: 0,
+                    svg: "eval_fx"
+                },
+                {
+                    q: "กำหนด f(x) = x^2 - 3x + 1 จงหาค่าของ f(-2)",
+                    options: ["11", "3", "-1", "7"],
+                    answer: 0,
+                    svg: "eval_fx"
+                },
+                {
+                    q: "ถ้า f(x) = 3x - 1 อินเวิร์สของฟังก์ชัน f^-1(x) เท่ากับข้อใด?",
+                    options: ["f^-1(x) = (x + 1) / 3", "f^-1(x) = (x - 1) / 3", "f^-1(x) = 3x + 1", "f^-1(x) = 1 / (3x - 1)"],
+                    answer: 0,
+                    svg: "inverse_func"
+                },
+                {
+                    q: "กำหนด f(x) = 2x และ g(x) = x + 5 จงหาค่าของ (g ∘ f)(3)",
+                    options: ["11", "16", "13", "18"],
+                    answer: 0,
+                    svg: "composite_func"
+                },
+                {
+                    q: "กำหนด f(x) = x + 2 และ g(x) = x^2 ฟังก์ชันประกอบ (f ∘ g)(x) เท่ากับข้อใด?",
+                    options: ["x^2 + 2", "(x + 2)^2", "x^2 + 4", "2x + 2"],
+                    answer: 0,
+                    svg: "composite_func"
+                },
+                {
+                    q: "กำหนด f(x) = x + 2 และ g(x) = x^2 ฟังก์ชันประกอบ (g ∘ f)(x) เท่ากับข้อใด?",
+                    options: ["(x + 2)^2 = x^2 + 4x + 4", "x^2 + 2", "x^2 + 4", "x^2 + 2x + 4"],
+                    answer: 0,
+                    svg: "composite_func"
+                },
+                {
+                    q: "ถ้า f(2x + 1) = 4x + 5 แล้ว f(x) มีค่าเท่ากับข้อใด?",
+                    options: ["2x + 3", "2x + 1", "4x + 3", "2x + 5"],
+                    answer: 0,
+                    svg: "eval_fx"
+                },
+                {
+                    q: "สมบัติของฟังก์ชันผกผัน ข้อใดถูกต้องเสมอ?",
+                    options: ["(f ∘ f^-1)(x) = x", "(f ∘ f^-1)(x) = 1", "(f ∘ f^-1)(x) = 0", "(f ∘ f^-1)(x) = f(x)"],
+                    answer: 0,
+                    svg: "inverse_func"
+                },
+                {
+                    q: "กราฟของ f(x) และ f^-1(x) จะมีความสมมาตรกันโดยมีเส้นตรงใดเป็นแกนสะท้อน?",
+                    options: ["เส้นตรง y = x", "แกน X (y = 0)", "แกน Y (x = 0)", "เส้นตรง y = -x"],
+                    answer: 0,
+                    svg: "reflection_yx"
+                },
+                {
+                    q: "ถ้า f(x) = (x + 2) / (x - 1) จงหาโดเมนของ f^-1(x)",
+                    options: ["{x ∈ R | x ≠ 1}", "{x ∈ R | x ≠ -2}", "{x ∈ R | x ≠ 0}", "จำนวนจริงทั้งหมด"],
+                    answer: 0,
+                    svg: "graph_rational"
+                },
+                {
+                    q: "กำหนด f = {(1, 3), (2, 4), (3, 5)} และ g = {(3, 10), (4, 20), (5, 30)} จงหา (g ∘ f)(1)",
+                    options: ["10", "20", "30", "3"],
+                    answer: 0,
+                    svg: "composite_func"
+                },
+                {
+                    q: "กำหนด f(x) = x^3 แล้ว f^-1(8) มีค่าเท่ากับข้อใด?",
+                    options: ["2", "512", "2sqrt(2)", "4"],
+                    answer: 0,
+                    svg: "inverse_func"
+                },
+                {
+                    q: "กำหนด f(x) = 5x - 2 จงหาค่าของ (f ∘ f^-1)(100)",
+                    options: ["100", "498", "500", "20"],
+                    answer: 0,
+                    svg: "inverse_func"
+                },
+                {
+                    q: "ถ้า f(x) = 2x + k และ f(3) = 11 แล้ว ค่าของ k เท่ากับเท่าใด?",
+                    options: ["5", "3", "2", "6"],
+                    answer: 0,
+                    svg: "eval_fx"
+                },
+                {
+                    q: "กำหนด f(x) = |x - 3| จงหาช่วงเรนจ์ R_f ของฟังก์ชันนี้",
+                    options: ["[0, ∞)", "(3, ∞)", "(-∞, ∞)", "[3, ∞)"],
+                    answer: 0,
+                    svg: "graph_abs"
+                }
+            ]
+        };
+
+        /* -----------------------------------------------------------------
+         * 3. STATE MANAGEMENT & STORAGE
+         * ----------------------------------------------------------------- */
+        let gameState = {
+            user: {
+                name: 'นักเรียน ม.4',
+                studentId: '40101',
+                room: 'ม.4/1',
+                avatar: '📐'
+            },
+            currentLevel: 1,
+            unlockedLevel: 1,
+            currentQuestionIdx: 0,
+            score: 0,
+            streak: 0,
+            timer: 480, // 8 นาที
+            timerInterval: null,
+            skipsRemaining: 2,
+            correctCount: 0,
+            timeSpent: 0,
+            handControlSimActive: false,
+            questions: []
+        };
+
+        /* -----------------------------------------------------------------
+         * 4. DYNAMIC SVG GRAPH & DIAGRAM RENDERER
+         * ----------------------------------------------------------------- */
+        function renderDiagramSVG(type) {
+            const container = document.getElementById('question-image-container');
+            let svgContent = '';
+
+            switch(type) {
+                case 'cartesian_product':
+                    svgContent = `
+                    <svg viewBox="0 0 360 120" class="w-full h-full max-h-36">
+                        <rect x="20" y="20" width="140" height="80" rx="12" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
+                        <text x="30" y="45" fill="#60a5fa" font-weight="bold" font-size="14">เซต A = {1, 2}</text>
+                        <text x="30" y="75" fill="#a78bfa" font-weight="bold" font-size="14">เซต B = {a, b}</text>
+                        
+                        <path d="M 170 60 L 210 60" stroke="#f59e0b" stroke-width="3" marker-end="url(#arrow)"/>
+                        <defs>
+                            <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b"/>
+                            </marker>
+                        </defs>
+                        
+                        <rect x="220" y="20" width="120" height="80" rx="12" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                        <text x="230" y="50" fill="#34d399" font-weight="bold" font-size="13">A x B</text>
+                        <text x="230" y="75" fill="#f3f4f6" font-size="11">{(1,a),(1,b)...}</text>
+                    </svg>`;
+                    break;
+                case 'arrow_relation_1':
+                case 'arrow_1to1':
+                case 'arrow_onto':
+                case 'arrow_manyto1':
+                    svgContent = `
+                    <svg viewBox="0 0 360 120" class="w-full h-full max-h-36">
+                        <!-- Set A Oval -->
+                        <ellipse cx="90" cy="60" rx="45" ry="45" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
+                        <text x="90" y="25" fill="#60a5fa" font-weight="bold" font-size="12" text-anchor="middle">โดเมน A</text>
+                        <circle cx="80" cy="45" r="4" fill="#3b82f6"/><text x="70" y="48" fill="#fff" font-size="10">1</text>
+                        <circle cx="80" cy="60" r="4" fill="#3b82f6"/><text x="70" y="63" fill="#fff" font-size="10">2</text>
+                        <circle cx="80" cy="75" r="4" fill="#3b82f6"/><text x="70" y="78" fill="#fff" font-size="10">3</text>
+
+                        <!-- Set B Oval -->
+                        <ellipse cx="270" cy="60" rx="45" ry="45" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+                        <text x="270" y="25" fill="#c084fc" font-weight="bold" font-size="12" text-anchor="middle">เรนจ์ B</text>
+                        <circle cx="260" cy="45" r="4" fill="#a855f7"/><text x="272" y="48" fill="#fff" font-size="10">a</text>
+                        <circle cx="260" cy="60" r="4" fill="#a855f7"/><text x="272" y="63" fill="#fff" font-size="10">b</text>
+                        <circle cx="260" cy="75" r="4" fill="#a855f7"/><text x="272" y="78" fill="#fff" font-size="10">c</text>
+
+                        <!-- Mapping Arrows -->
+                        <line x1="84" y1="45" x2="254" y2="45" stroke="#f59e0b" stroke-width="2"/>
+                        <line x1="84" y1="60" x2="254" y2="60" stroke="#f59e0b" stroke-width="2"/>
+                        <line x1="84" y1="75" x2="254" y2="75" stroke="#f59e0b" stroke-width="2"/>
+                    </svg>`;
+                    break;
+                case 'vertical_line_test':
+                case 'horizontal_line_test':
+                    svgContent = `
+                    <svg viewBox="0 0 360 120" class="w-full h-full max-h-36">
+                        <!-- Coordinate Axes -->
+                        <line x1="40" y1="60" x2="320" y2="60" stroke="#64748b" stroke-width="2"/>
+                        <line x1="180" y1="10" x2="180" y2="110" stroke="#64748b" stroke-width="2"/>
+                        <!-- Curve -->
+                        <path d="M 80 90 Q 180 10, 280 90" fill="none" stroke="#3b82f6" stroke-width="3"/>
+                        <!-- Vertical Test Line -->
+                        <line x1="220" y1="15" x2="220" y2="105" stroke="#ef4444" stroke-width="2" stroke-dasharray="4"/>
+                        <circle cx="220" cy="42" r="5" fill="#ef4444"/>
+                        <text x="230" y="40" fill="#ef4444" font-weight="bold" font-size="11">ตัด 1 จุด = เป็นฟังก์ชัน</text>
+                    </svg>`;
+                    break;
+                case 'graph_parabola':
+                case 'graph_linear':
+                case 'graph_circle':
+                    svgContent = `
+                    <svg viewBox="0 0 360 120" class="w-full h-full max-h-36">
+                        <line x1="40" y1="60" x2="320" y2="60" stroke="#64748b" stroke-width="2"/>
+                        <line x1="180" y1="10" x2="180" y2="110" stroke="#64748b" stroke-width="2"/>
+                        <text x="310" y="55" fill="#94a3b8" font-size="10">X</text>
+                        <text x="185" y="20" fill="#94a3b8" font-size="10">Y</text>
+                        <circle cx="180" cy="60" r="35" fill="none" stroke="#10b981" stroke-width="3"/>
+                        <text x="180" y="115" fill="#10b981" font-weight="bold" font-size="11" text-anchor="middle">กราฟระบบพิกัดฉาก x² + y² = r²</text>
+                    </svg>`;
+                    break;
+                case 'reflection_yx':
+                    svgContent = `
+                    <svg viewBox="0 0 360 120" class="w-full h-full max-h-36">
+                        <line x1="40" y1="60" x2="320" y2="60" stroke="#64748b" stroke-width="1.5"/>
+                        <line x1="180" y1="10" x2="180" y2="110" stroke="#64748b" stroke-width="1.5"/>
+                        <!-- Line y = x -->
+                        <line x1="100" y1="110" x2="260" y2="10" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4"/>
+                        <!-- Curve f(x) -->
+                        <path d="M 120 100 Q 180 80, 260 20" fill="none" stroke="#3b82f6" stroke-width="2.5"/>
+                        <!-- Curve f^-1(x) -->
+                        <path d="M 260 100 Q 200 80, 100 20" fill="none" stroke="#a855f7" stroke-width="2.5"/>
+                        <text x="265" y="20" fill="#3b82f6" font-size="10" font-weight="bold">f(x)</text>
+                        <text x="80" y="25" fill="#a855f7" font-size="10" font-weight="bold">f⁻¹(x)</text>
+                    </svg>`;
+                    break;
+                default:
+                    svgContent = `
+                    <svg viewBox="0 0 360 120" class="w-full h-full max-h-36">
+                        <rect x="30" y="20" width="300" height="80" rx="16" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
+                        <text x="180" y="55" fill="#38bdf8" font-weight="extrabold" font-size="16" text-anchor="middle">f(x) = y</text>
+                        <text x="180" y="80" fill="#94a3b8" font-weight="bold" font-size="12" text-anchor="middle">คณิตศาสตร์ ม.4: ความสัมพันธ์และฟังก์ชัน</text>
+                    </svg>`;
+                    break;
+            }
+            container.innerHTML = svgContent;
+        }
+
+        /* -----------------------------------------------------------------
+         * 5. UI SCREEN SWITCHING & PROFILE
+         * ----------------------------------------------------------------- */
+        function showScreen(screenId) {
+            AudioEngine.playClickSFX();
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            const target = document.getElementById(screenId);
+            if (target) target.classList.remove('hidden');
+
+            if (screenId === 'screen-stats') renderLeaderboard();
+        }
+
+        function initAvatars() {
+            const container = document.getElementById('avatar-selector');
+            container.innerHTML = '';
+            AVATARS.forEach((av, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `p-2 text-2xl rounded-xl border-2 ${idx === 0 ? 'border-yellow-400 bg-blue-700' : 'border-gray-700 bg-[#0f172a]'} hover:bg-blue-600 transition`;
+                btn.innerText = av;
+                btn.onclick = () => {
+                    document.querySelectorAll('#avatar-selector button').forEach(b => {
+                        b.classList.remove('border-yellow-400', 'bg-blue-700');
+                        b.classList.add('border-gray-700', 'bg-[#0f172a]');
+                    });
+                    btn.classList.remove('border-gray-700', 'bg-[#0f172a]');
+                    btn.classList.add('border-yellow-400', 'bg-blue-700');
+                    gameState.user.avatar = av;
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function saveProfileAndStart() {
+            const nameInput = document.getElementById('input-name').value.trim();
+            const idInput = document.getElementById('input-student-id').value.trim();
+            const roomInput = document.getElementById('input-room').value.trim();
+
+            if (!nameInput) {
+                alert('กรุณากรอกชื่อของคุณก่อนเข้าสู่ห้องเรียน!');
+                return;
+            }
+
+            gameState.user.name = nameInput;
+            gameState.user.studentId = idInput || '40101';
+            gameState.user.room = roomInput || 'ม.4/1';
+
+            // Update Header & Main Menu UI
+            document.getElementById('header-avatar').innerText = gameState.user.avatar;
+            document.getElementById('header-username').innerText = gameState.user.name;
+            document.getElementById('header-student-id').innerText = `ID: ${gameState.user.studentId} | ${gameState.user.room}`;
+            
+            document.getElementById('menu-avatar-display').innerText = gameState.user.avatar;
+            document.getElementById('menu-username-display').innerText = gameState.user.name;
+
+            // Load saved progress from LocalStorage
+            loadSavedStats();
+
+            showScreen('screen-main-menu');
+            AudioEngine.startBGM();
+        }
+
+        /* -----------------------------------------------------------------
+         * 6. GAMEPLAY ENGINE & LOGIC
+         * ----------------------------------------------------------------- */
+        function startLevel(levelNum) {
+            gameState.currentLevel = levelNum;
+            gameState.currentQuestionIdx = 0;
+            gameState.score = 0;
+            gameState.streak = 0;
+            gameState.timer = 480; // 8 นาที
+            gameState.skipsRemaining = 2;
+            gameState.correctCount = 0;
+            gameState.timeSpent = 0;
+            
+            // Shallow copy questions for current level
+            gameState.questions = [...QUESTION_BANK[levelNum]];
+            
+            document.getElementById('game-level-badge').innerText = `ด่าน ${levelNum}`;
+            document.getElementById('skip-count').innerText = gameState.skipsRemaining;
+            document.getElementById('game-score').innerText = '0';
+            
+            showScreen('screen-gameplay');
+            startTimer();
+            loadQuestion();
+        }
+
+        function startTimer() {
+            if (gameState.timerInterval) clearInterval(gameState.timerInterval);
+            
+            const timerBar = document.getElementById('game-timer-bar');
+            const timerText = document.getElementById('game-timer-text');
+
+            gameState.timerInterval = setInterval(() => {
+                gameState.timer--;
+                gameState.timeSpent++;
+
+                const mins = Math.floor(gameState.timer / 60);
+                const secs = gameState.timer % 60;
+                timerText.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                
+                const pct = (gameState.timer / 480) * 100;
+                timerBar.style.width = `${pct}%`;
+
+                if (gameState.timer <= 0) {
+                    clearInterval(gameState.timerInterval);
+                    finishLevel();
+                }
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            const q = gameState.questions[gameState.currentQuestionIdx];
+            document.getElementById('game-question-counter').innerText = `ข้อ ${gameState.currentQuestionIdx + 1} / ${gameState.questions.length}`;
+            document.getElementById('question-text').innerText = q.q;
+
+            // Render SVG Diagram
+            renderDiagramSVG(q.svg || 'default');
+
+            // Render Options
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            q.options.forEach((optText, originalIdx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn p-3 text-left font-bold text-sm md:text-base flex items-center space-x-3 w-full';
+                
+                const labelSpan = document.createElement('span');
+                labelSpan.className = 'w-7 h-7 rounded-lg bg-blue-900/80 border border-blue-400 flex items-center justify-center text-xs text-yellow-300 font-extrabold flex-shrink-0';
+                labelSpan.innerText = String.fromCharCode(65 + originalIdx); // A, B, C, D
+
+                const textSpan = document.createElement('span');
+                textSpan.className = 'flex-1 text-gray-100';
+                textSpan.innerText = optText;
+
+                btn.appendChild(labelSpan);
+                btn.appendChild(textSpan);
+
+                btn.onclick = () => checkAnswer(originalIdx, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIdx, btnElement) {
+            const q = gameState.questions[gameState.currentQuestionIdx];
+            const allOptionBtns = document.querySelectorAll('.option-btn');
+            
+            allOptionBtns.forEach(b => b.style.pointerEvents = 'none');
+
+            if (selectedIdx === q.answer) {
+                // Correct
+                AudioEngine.playCorrectSFX();
+                btnElement.classList.add('correct');
+                
+                gameState.streak++;
+                gameState.correctCount++;
+                
+                const pointsEarned = 100 + (gameState.streak > 1 ? (gameState.streak - 1) * 20 : 0);
+                gameState.score += pointsEarned;
+                document.getElementById('game-score').innerText = gameState.score;
+
+                if (gameState.streak > 1) {
+                    const streakBox = document.getElementById('streak-container');
+                    document.getElementById('streak-count').innerText = gameState.streak;
+                    streakBox.classList.remove('hidden');
+                }
+
+                if (document.getElementById('particle-toggle').checked && typeof confetti === 'function') {
+                    confetti({ particleCount: 40, spread: 60, origin: { y: 0.8 } });
+                }
+            } else {
+                // Incorrect
+                AudioEngine.playWrongSFX();
+                btnElement.classList.add('incorrect');
+                allOptionBtns[q.answer].classList.add('correct');
+
+                gameState.streak = 0;
+                document.getElementById('streak-container').classList.add('hidden');
+            }
+
+            setTimeout(() => {
+                gameState.currentQuestionIdx++;
+                if (gameState.currentQuestionIdx < gameState.questions.length) {
+                    loadQuestion();
+                } else {
+                    finishLevel();
+                }
+            }, 1200);
+        }
+
+        function skipQuestion() {
+            if (gameState.skipsRemaining > 0 && gameState.currentQuestionIdx < gameState.questions.length - 1) {
+                gameState.skipsRemaining--;
+                document.getElementById('skip-count').innerText = gameState.skipsRemaining;
+                AudioEngine.playClickSFX();
+                
+                gameState.currentQuestionIdx++;
+                loadQuestion();
+            }
+        }
+
+        function finishLevel() {
+            if (gameState.timerInterval) clearInterval(gameState.timerInterval);
+
+            const totalQ = gameState.questions.length;
+            const accuracy = Math.round((gameState.correctCount / totalQ) * 100);
+
+            document.getElementById('summary-title').innerText = `สรุปผลด่านที่ ${gameState.currentLevel}`;
+            document.getElementById('summary-score').innerText = gameState.score;
+            document.getElementById('summary-accuracy').innerText = `${accuracy}%`;
+            
+            const elapsedMins = Math.floor(gameState.timeSpent / 60);
+            const elapsedSecs = gameState.timeSpent % 60;
+            document.getElementById('summary-time').innerText = `${elapsedMins.toString().padStart(2, '0')}:${elapsedSecs.toString().padStart(2, '0')}`;
+
+            // Calculate Stars
+            const starsContainer = document.getElementById('summary-stars');
+            let starsHTML = '';
+            let starsEarned = 1;
+            if (accuracy >= 80) starsEarned = 3;
+            else if (accuracy >= 60) starsEarned = 2;
+
+            for (let i = 0; i < 3; i++) {
+                if (i < starsEarned) {
+                    starsHTML += '<i class="fas fa-star text-yellow-400"></i> ';
+                } else {
+                    starsHTML += '<i class="far fa-star text-gray-600"></i> ';
+                }
+            }
+            starsContainer.innerHTML = starsHTML;
+
+            // Unlock Next Level if accuracy >= 60%
+            if (accuracy >= 60 && gameState.currentLevel < 3) {
+                gameState.unlockedLevel = Math.max(gameState.unlockedLevel, gameState.currentLevel + 1);
+                updateLevelSelectUI();
+            }
+
+            saveStatsData();
+            showScreen('screen-summary');
+
+            if (starsEarned >= 2 && document.getElementById('particle-toggle').checked && typeof confetti === 'function') {
+                confetti({ particleCount: 120, spread: 100, origin: { y: 0.5 } });
+            }
+        }
+
+        function retryCurrentLevel() {
+            startLevel(gameState.currentLevel);
+        }
+
+        function updateLevelSelectUI() {
+            for (let i = 2; i <= 3; i++) {
+                const card = document.getElementById(`level-card-${i}`);
+                const btn = document.getElementById(`level-btn-${i}`);
+                
+                if (i <= gameState.unlockedLevel) {
+                    card.classList.remove('opacity-75', 'border-gray-700');
+                    card.classList.add('border-blue-500/50');
+                    btn.disabled = false;
+                    btn.className = 'roblox-btn roblox-btn-green w-full py-3 text-sm';
+                    btn.innerHTML = `ลุยด่าน ${i} <i class="fas fa-chevron-right ml-1"></i>`;
+                }
+            }
+        }
+
+        /* -----------------------------------------------------------------
+         * 7. INTERACTIVE HAND CONTROL SIMULATOR
+         * ----------------------------------------------------------------- */
+        function toggleHandControlSim() {
+            gameState.handControlSimActive = !gameState.handControlSimActive;
+            const statusText = document.getElementById('hand-sim-status');
+            const pointer = document.getElementById('virtual-pointer');
+
+            if (gameState.handControlSimActive) {
+                statusText.innerText = 'เปิดใช้งาน';
+                statusText.className = 'text-green-400 font-bold';
+                pointer.style.display = 'block';
+
+                window.addEventListener('mousemove', handleHandMove);
+                window.addEventListener('mousedown', handleHandPinchStart);
+                window.addEventListener('mouseup', handleHandPinchEnd);
+            } else {
+                statusText.innerText = 'ปิด';
+                statusText.className = 'text-gray-400';
+                pointer.style.display = 'none';
+
+                window.removeEventListener('mousemove', handleHandMove);
+                window.removeEventListener('mousedown', handleHandPinchStart);
+                window.removeEventListener('mouseup', handleHandPinchEnd);
+            }
+        }
+
+        function handleHandMove(e) {
+            const pointer = document.getElementById('virtual-pointer');
+            pointer.style.left = `${e.clientX}px`;
+            pointer.style.top = `${e.clientY}px`;
+        }
+
+        function handleHandPinchStart() {
+            const pointer = document.getElementById('virtual-pointer');
+            pointer.classList.add('pinching');
+        }
+
+        function handleHandPinchEnd() {
+            const pointer = document.getElementById('virtual-pointer');
+            pointer.classList.remove('pinching');
+        }
+
+        /* -----------------------------------------------------------------
+         * 8. LOCAL STORAGE & STATS ENGINE
+         * ----------------------------------------------------------------- */
+        function saveStatsData() {
+            const history = JSON.parse(localStorage.getItem('math_func_roblox_stats') || '[]');
+            
+            const newRecord = {
+                name: gameState.user.name,
+                studentId: gameState.user.studentId,
+                room: gameState.user.room,
+                avatar: gameState.user.avatar,
+                score: gameState.score,
+                level: gameState.currentLevel,
+                date: new Date().toLocaleDateString('th-TH')
+            };
+
+            history.push(newRecord);
+            history.sort((a, b) => b.score - a.score);
+
+            localStorage.setItem('math_func_roblox_stats', JSON.stringify(history.slice(0, 10)));
+            loadSavedStats();
+        }
+
+        function loadSavedStats() {
+            const history = JSON.parse(localStorage.getItem('math_func_roblox_stats') || '[]');
+            const userHighest = history
+                .filter(h => h.name === gameState.user.name)
+                .reduce((max, h) => h.score > max ? h.score : max, 0);
+
+            document.getElementById('menu-total-score').innerText = `คะแนนสูงสุดของคุณ: ${userHighest} คะแนน`;
+            document.getElementById('stats-high-score').innerText = userHighest;
+            
+            document.getElementById('stats-avatar').innerText = gameState.user.avatar;
+            document.getElementById('stats-name').innerText = gameState.user.name;
+            document.getElementById('stats-student-id').innerText = `ID: ${gameState.user.studentId} | ${gameState.user.room}`;
+        }
+
+        function renderLeaderboard() {
+            const listContainer = document.getElementById('leaderboard-list');
+            const history = JSON.parse(localStorage.getItem('math_func_roblox_stats') || '[]');
+
+            listContainer.innerHTML = '';
+
+            if (history.length === 0) {
+                listContainer.innerHTML = '<div class="text-xs text-gray-500 text-center py-4">ยังไม่มีข้อมูลสถิติ เล่นเกมเพื่อบันทึกคะแนน!</div>';
+                return;
+            }
+
+            history.forEach((item, idx) => {
+                const row = document.createElement('div');
+                row.className = 'flex items-center justify-between p-2 rounded-xl bg-[#0f172a] border border-blue-900/50 text-xs';
+                
+                let rankBadge = `<span class="w-6 text-gray-400 font-bold">#${idx + 1}</span>`;
+                if (idx === 0) rankBadge = `<span class="w-6 text-yellow-400 text-base"><i class="fas fa-crown"></i></span>`;
+                else if (idx === 1) rankBadge = `<span class="w-6 text-gray-300 text-sm"><i class="fas fa-medal"></i></span>`;
+                else if (idx === 2) rankBadge = `<span class="w-6 text-amber-600 text-sm"><i class="fas fa-medal"></i></span>`;
+
+                row.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        ${rankBadge}
+                        <span class="text-lg">${item.avatar || '📐'}</span>
+                        <div>
+                            <div class="font-bold text-white">${item.name} <span class="text-[10px] text-gray-400">(${item.studentId} ${item.room || ''})</span></div>
+                            <div class="text-[10px] text-blue-300">ด่าน ${item.level} • ${item.date}</div>
+                        </div>
+                    </div>
+                    <div class="font-black text-yellow-400 text-sm">${item.score} <span class="text-[10px] text-gray-400">pts</span></div>
+                `;
+                listContainer.appendChild(row);
+            });
+        }
+
+        function clearStatsData() {
+            if (confirm('คุณต้องการล้างข้อมูลสถิติตนเองใช่หรือไม่?')) {
+                localStorage.removeItem('math_func_roblox_stats');
+                loadSavedStats();
+                renderLeaderboard();
+            }
+        }
+
+        /* -----------------------------------------------------------------
+         * 9. INIT ON WINDOW LOAD
+         * ----------------------------------------------------------------- */
+        window.onload = function() {
+            initAvatars();
+            showScreen('screen-login');
+        };
+    </script>
+</body>
+</html>
